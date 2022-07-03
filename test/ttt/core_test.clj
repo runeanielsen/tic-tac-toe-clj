@@ -2,18 +2,6 @@
   (:require [ttt.core :as sut]
             [clojure.test :as t :refer [deftest is testing are]]))
 
-(deftest create-board-test
-  (are [expected result] (= expected result)
-    nil (sut/board 0 0)
-    nil (sut/board 1 0)
-    nil (sut/board 0 1)
-    [[:empty :empty]] (sut/board 1 2)
-    [[:empty]
-     [:empty]] (sut/board 2 1)
-    [[:empty :empty :empty]
-     [:empty :empty :empty]
-     [:empty :empty :empty]] (sut/board 3 3)))
-
 (deftest presentation-symbols
   (are [x y] (= x y)
     "+" (sut/presentation-symbols :plus)
@@ -28,27 +16,81 @@
                  [:empty :empty :empty]]
           result (sut/board-presentation board)]
       (is (= expected result))))
-  (testing "3x3 board with only empty, plus and circle."
+
+  (testing "3x3 board with empty, plus and circle."
     (let [expected "|o|+|-|\n|-|+|-|\n|-|-|o|"
           board [[:circle :plus :empty]
                  [:empty :plus :empty]
                  [:empty :empty :circle]]
           result (sut/board-presentation board)]
       (is (= expected result))))
-  (testing "2x3 board with only empty fields."
-    (let [expected "|o|+|-|\n|-|+|-|"
-          board [[:circle :plus :empty]
-                 [:empty :plus :empty]]
+
+  (testing "3x3 with filled."
+    (let [expected "|o|+|o|\n|+|+|o|\n|+|o|o|"
+          board [[:circle :plus :circle]
+                 [:plus :plus :circle]
+                 [:plus :circle :circle]]
           result (sut/board-presentation board)]
       (is (= expected result))))
-  (testing "2x1 board with only empty fields."
-    (let [expected "|o|\n|-|"
-          board [[:circle]
-                 [:empty]]
-          result (sut/board-presentation board)]
-      (is (= expected result))))
+
   (testing "Empty board."
     (let [expected ""
           board []
           result (sut/board-presentation board)]
+      (is (= expected result)))))
+
+(deftest valid-move?-test
+  (testing "Valid move 0,0 empty position."
+    (let [move [2 2]
+          board [[:empty :empty :empty]
+                 [:empty :empty :empty]
+                 [:empty :empty :empty]]
+          result (sut/valid-move? move board)]
+      (is (true? result))))
+
+  (testing "Valid move 2,2 empty position."
+    (let [move [2 2]
+          board [[:empty :plus :empty]
+                 [:circle :empty :plus]
+                 [:circle :empty :empty]]
+          result (sut/valid-move? move board)]
+      (is (true? result))))
+
+  (testing "Invalid move 2,2 already used."
+    (let [move [2 2]
+          board [[:empty :empty :empty]
+                 [:empty :empty :empty]
+                 [:empty :empty :plus]]
+          result (sut/valid-move? move board)]
+      (is (false? result))))
+
+  (testing "Invalid 4,2 outside of board."
+    (let [move [4 2]
+          board [[:empty :plus :empty]
+                 [:circle :empty :plus]
+                 [:circle :empty :empty]]
+          result (sut/valid-move? move board)]
+      (is (false? result)))))
+
+(deftest place-on-board-test
+  (testing "Place :plus on 2,2."
+    (let [expected [[:empty :empty :empty]
+                    [:empty :empty :empty]
+                    [:empty :empty :plus]]
+          board [[:empty :empty :empty]
+                 [:empty :empty :empty]
+                 [:empty :empty :empty]]
+          position [2 2]
+          result (sut/place-on-board :plus position board)]
+      (is (= expected result))))
+
+  (testing "Place :circle on 0,0."
+    (let [expected [[:circle :empty :empty]
+                    [:empty :empty :empty]
+                    [:empty :empty :empty]]
+          board [[:empty :empty :empty]
+                 [:empty :empty :empty]
+                 [:empty :empty :empty]]
+          position [0 0]
+          result (sut/place-on-board :circle position board)]
       (is (= expected result)))))
