@@ -72,6 +72,11 @@
           result (sut/valid-move? move board)]
       (is (false? result)))))
 
+(deftest initial-board-test
+  (is (= sut/initial-board [[:empty :empty :empty]
+                            [:empty :empty :empty]
+                            [:empty :empty :empty]])))
+
 (deftest place-on-board-test
   (testing "Place :plus on 2,2."
     (let [expected [[:empty :empty :empty]
@@ -93,4 +98,75 @@
                  [:empty :empty :empty]]
           position [0 0]
           result (sut/place-on-board :circle position board)]
+      (is (= expected result)))))
+
+(deftest get-winner
+  (testing "No winners."
+    (let [expected nil
+          board [[:empty :empty :empty]
+                 [:empty :empty :empty]
+                 [:empty :empty :empty]]
+          result (sut/get-winner board)]
+      (is (= expected result)))
+
+    (let [expected nil
+          board [[:empty :plus :empty]
+                 [:empty :circle :empty]
+                 [:empty :empty :empty]]
+          result (sut/get-winner board)]
+      (is (= expected result)))
+
+    (let [expected nil
+          board [[:plus :plus :circle]
+                 [:circle :circle :plus]
+                 [:plus :circle :plus]]
+          result (sut/get-winner board)]
+      (is (= expected result))))
+
+  (testing "First row all same wins."
+    (let [expected :plus
+          board [[:plus :plus :plus]
+                 [:circle :circle :plus]
+                 [:circle :circle :plus]]
+          result (sut/get-winner board)]
+      (is (= expected result))))
+
+  (testing "Second row all same wins."
+    (let [expected :circle
+          board [[:circle :plus :plus]
+                 [:circle :circle :circle]
+                 [:plus :plus :circle]]
+          result (sut/get-winner board)]
+      (is (= expected result))))
+
+  (testing "Third row all same wins."
+    (let [expected :circle
+          board [[:circle :plus :plus]
+                 [:plus :plus :circle]
+                 [:circle :circle :circle]]
+          result (sut/get-winner board)]
+      (is (= expected result))))
+
+  (testing "First column all same wins."
+    (let [expected :circle
+          board [[:circle :plus :circle]
+                 [:circle :plus :plus]
+                 [:circle :circle :plus]]
+          result (sut/get-winner board)]
+      (is (= expected result))))
+
+  (testing "Second column all same wins."
+    (let [expected :plus
+          board [[:plus :plus :circle]
+                 [:circle :plus :plus]
+                 [:circle :plus :plus]]
+          result (sut/get-winner board)]
+      (is (= expected result))))
+
+  (testing "Third column all same wins."
+    (let [expected :circle
+          board [[:plus :circle :circle]
+                 [:plus :circle :plus]
+                 [:circle :circle :plus]]
+          result (sut/get-winner board)]
       (is (= expected result)))))
