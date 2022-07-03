@@ -25,9 +25,11 @@
   (assoc-in board placement value))
 
 (defn get-winner [board]
-  (let [find-winner (comp (mapcat frequencies)
-                          (filter #(= 3 (val %)))
-                          (filter #(not= (key %) :empty)))]
-    (when-let [winner (or (first (into [] find-winner board))
-                          (first (into [] find-winner (partition 3 (apply interleave board)))))]
-      (key winner))))
+  (let [winner (comp (map set)
+                     (filter #(= (count %) 1))
+                     (map #(disj % :empty)))
+        rows board
+        columns (partition 3 (apply interleave board))
+        cross [(reduce (fn [acc x] (conj acc (get-in board [x x]))) [] (range 3))
+               (reduce (fn [acc x] (conj acc (get-in board [x (- 2 x)]))) [] (range 3))]]
+    (ffirst (into [] winner (concat rows columns cross)))))

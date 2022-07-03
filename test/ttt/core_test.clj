@@ -166,7 +166,23 @@
   (testing "Third column all same wins."
     (let [expected :circle
           board [[:plus :circle :circle]
-                 [:plus :circle :plus]
-                 [:circle :circle :plus]]
+                 [:plus :plus :circle]
+                 [:circle :plus :circle]]
+          result (sut/get-winner board)]
+      (is (= expected result))))
+
+  (testing "Top left to right bottom wins."
+    (let [expected :plus
+          board [[:plus :circle :circle]
+                 [:plus :plus :circle]
+                 [:circle :plus :plus]]
+          result (sut/get-winner board)]
+      (is (= expected result))))
+
+  (testing "Top right to bottom left wins."
+    (let [expected :circle
+          board [[:plus :circle :circle]
+                 [:plus :circle :circle]
+                 [:circle :plus :plus]]
           result (sut/get-winner board)]
       (is (= expected result)))))
