@@ -34,3 +34,30 @@
         cross [(mapv #(get-in board [% %]) (range 3))
                (mapv #(get-in board [% (- 2 %)]) (range 3))]]
     (ffirst (into [] winner (concat board columns cross)))))
+
+(defn parse-move [input-move]
+  (let [splitted (str/split input-move #",")]
+    (map #(Integer/parseInt %) splitted)))
+
+(defn round-introduction [board player]
+  (println (format "This is the current board:\n%s\n%s its your turn."
+                   (board-presentation board)
+                   (presentation-symbols player))))
+
+(defn game-loop []
+  (loop [board initial-board player :plus]
+    (println "---------------------------------")
+    (if-let [winner (get-winner board)]
+      (println "The winner is:" winner "!")
+      (do (round-introduction board player)
+          (if-let [move (parse-move (read-line))]
+            (if (valid-move? move board)
+              (recur (place-on-board player move board) (next-turn player))
+              (do (println "The move is invalid, please try again.")
+                  (recur board player)))
+            (do (println "Could not parse move, please try again.")
+                (recur board player)))))))
+
+(defn main []
+  (println "Welcome to a game of Tic Tac Toe!")
+  (game-loop))

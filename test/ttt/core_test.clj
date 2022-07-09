@@ -187,7 +187,7 @@
           result (sut/get-winner board)]
       (is (= expected result)))))
 
-(deftest next-turn
+(deftest next-turn-test
   (testing "Current player turn is circle next should be plus."
     (let [expected :plus
           result (sut/next-turn :circle)]
@@ -196,4 +196,11 @@
   (testing "Current player turn is plus next should be circle."
     (let [expected :circle
           result (sut/next-turn :plus)]
+      (is (= expected result)))))
+
+(deftest parse-move-test
+  (testing "Parse move 1,1"
+    (let [expected [1 1]
+          input-move "1,1"
+          result (sut/parse-move input-move)]
       (is (= expected result)))))
