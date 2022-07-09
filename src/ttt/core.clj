@@ -11,6 +11,10 @@
    [:empty :empty :empty]
    [:empty :empty :empty]])
 
+(def next-turn
+  {:plus :circle
+   :circle :plus})
+
 (defn board-presentation [board]
   (let [present-rows (comp (map #(map presentation-symbols %))
                            (map #(str/join "|" %))

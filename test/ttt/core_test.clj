@@ -186,3 +186,14 @@
                  [:circle :plus :plus]]
           result (sut/get-winner board)]
       (is (= expected result)))))
+
+(deftest next-turn
+  (testing "Current player turn is circle next should be plus."
+    (let [expected :plus
+          result (sut/next-turn :circle)]
+      (is (= expected result))))
+
+  (testing "Current player turn is plus next should be circle."
+    (let [expected :circle
+          result (sut/next-turn :plus)]
+      (is (= expected result)))))
