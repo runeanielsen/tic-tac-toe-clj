@@ -39,17 +39,14 @@
   (let [splitted (str/split input-move #",")]
     (map #(Integer/parseInt %) splitted)))
 
-(defn round-introduction [board player]
-  (println (format "This is the current board:\n%s\n%s its your turn."
-                   (board-presentation board)
-                   (presentation-symbols player))))
-
 (defn game-loop []
   (loop [board initial-board player :plus]
     (println "---------------------------------")
     (if-let [winner (get-winner board)]
       (println "The winner is:" winner "!")
-      (do (round-introduction board player)
+      (do (println (format "This is the current board:\n%s\n%s its your turn."
+                           (board-presentation board)
+                           (presentation-symbols player)))
           (if-let [move (parse-move (read-line))]
             (if (valid-move? move board)
               (recur (place-on-board player move board) (next-turn player))
