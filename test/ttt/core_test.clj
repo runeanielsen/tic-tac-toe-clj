@@ -199,8 +199,26 @@
       (is (= expected result)))))
 
 (deftest parse-move-test
-  (testing "Parse move 1,1"
+  (testing "Valid move '1,1'"
     (let [expected [1 1]
           input-move "1,1"
+          result (sut/parse-move input-move)]
+      (is (= expected result))))
+
+  (testing "Valid move '0, 0'"
+    (let [expected [0 0]
+          input-move "0, 0"
+          result (sut/parse-move input-move)]
+      (is (= expected result))))
+
+  (testing "Valid move ' 3,  3'"
+    (let [expected [3 3]
+          input-move " 3,  3"
+          result (sut/parse-move input-move)]
+      (is (= expected result))))
+
+  (testing "Valid move '3 , 3'"
+    (let [expected [3 3]
+          input-move "3 , 3"
           result (sut/parse-move input-move)]
       (is (= expected result)))))

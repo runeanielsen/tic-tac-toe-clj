@@ -36,7 +36,7 @@
     (ffirst (into [] winner (concat board columns cross)))))
 
 (defn parse-move [input-move]
-  (let [splitted (str/split input-move #",")]
+  (let [splitted (map str/trim (str/split input-move #","))]
     (map #(Integer/parseInt %) splitted)))
 
 (defn game-loop []
